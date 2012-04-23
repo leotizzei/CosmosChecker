@@ -1,6 +1,4 @@
-COSMOSCHECKER's Manual
-author: Leonardo Pondian Tizzei
-email: tizzei@ic.unicamp.br
+xMANUAL DO COSMOSCHECKER
 
 
 O CosmosChecker recebe três valores de entrada: (1) o arquivo de regras do COSMOS;(2) o pacote do componente e;(3) o diretório das classes ou o arquivo jar. O arquivo de regras do COSMOS lista as regras que analisam o componente para saber se ele satisfaz as restrições do COSMOS.
