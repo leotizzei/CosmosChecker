@@ -1,0 +1,141 @@
+package droolsmgr.impl;
+ 
+import java.lang.Object;
+import java.lang.String;
+import java.lang.Boolean;
+import java.lang.Integer;
+import java.io.File;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import droolsmgr.impl.cosmosRules.*;
+#import droolsmgr.impl.cosmosRules.CosmosRulesManager;
+
+ 
+
+function void logging(String str){
+	System.out.println("str =  " + str);
+	File file = new File("./cosmosCheckerLog.txt");
+	try {
+		String init = "";
+		if(file.exists()){
+			// read the file
+			BufferedReader br = new BufferedReader(new FileReader( file ) );
+			String aux2 = br.readLine();
+			while( aux2 != null ){
+				init += aux2 + "\n";
+				aux2 = br.readLine();
+			}
+			br.close();
+		}
+		String finalStr = init + str;
+		BufferedWriter bw = new BufferedWriter(new FileWriter( file ));
+		bw.write( finalStr );
+		bw.close();
+	} catch (FileNotFoundException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+}  
+  
+rule "Check impl rule "
+	salience 80
+	when
+		componentFile : File()		
+	then
+		System.out.println( ">>>>Starting Check impl rule... " ); 
+		PackageImpl obj = new PackageImpl();
+		boolean result = obj.checkPackageImpl( componentFile );
+		#boolean result = false;
+		System.out.println(" result "+ result);
+		CosmosRulesManager.saveResult( result );
+		String logStr = ">> Check impl package: " ;
+		if( result )
+			logStr = logStr.concat("OK");
+		else
+			logStr = logStr.concat("Failed");
+		logging( logStr );
+		
+
+end
+
+rule " Check spec package rule "
+	salience 80
+	when
+		componentFile : File()		
+	then
+		System.out.println( ">>>>Starting Check spec package rule... " ); 
+		PackageSpec obj = new PackageSpec();
+		boolean result = obj.checkPackageSpec( componentFile );
+		System.out.println(" result "+ result);
+		CosmosRulesManager.saveResult( result );
+		String logStr = ">> Check spec package:" ;
+		if( result )
+			logStr = logStr.concat("OK");
+		else
+			logStr = logStr.concat("Failed");
+		logging( logStr );
+end
+
+rule " Check spec.prov rule "
+	salience 70
+	when
+		componentFile : File()		
+	then
+		System.out.println( ">>>>Starting Check spec.prov rule... " ); 
+		PackageSpecProv obj = new PackageSpecProv();
+		boolean result = obj.checkPackageSpecProv( componentFile );
+		System.out.println(" result "+ result);
+		CosmosRulesManager.saveResult( result );
+		String logStr = ">> Check spec.prov package:" ;
+		if( result )
+			logStr = logStr.concat("OK");
+		else
+			logStr = logStr.concat("Failed");
+		logging( logStr );
+
+end
+
+
+rule "Check all implemented interfaces"
+	salience 60
+	when
+		componentFile : File()		
+		componentPackage : String()
+	then
+		System.out.println( ">>>>Starting all implemented interfaces rule... " ); 
+		AllInterfacesImplemented obj = new AllInterfacesImplemented();
+		boolean result = obj.checkImplementedInterfaces( componentFile , componentPackage );
+		System.out.println(" result "+ result);
+        CosmosRulesManager.saveResult( result );
+		String logStr = ">> All interfaces were implemented:" ;
+		if( result )
+			logStr = logStr.concat("OK");
+		else
+			logStr = logStr.concat("Failed");
+		logging( logStr );
+end
+
+rule "Check ComponentFactory"
+	salience 60
+	when
+		componentFile : File()		
+	then
+		System.out.println( ">>>>Starting Check ComponentFactory rule... " ); 
+		CheckCompFactory obj = new CheckCompFactory();
+		boolean result = obj.checkComponentFactory( componentFile );
+		System.out.println(" result "+ result);
+       CosmosRulesManager.saveResult( result );
+		String logStr = ">> Check ComponentFactory:" ;
+		if( result )
+			logStr = logStr.concat("OK");
+		else
+			logStr = logStr.concat("Failed");
+		logging( logStr );
+end
